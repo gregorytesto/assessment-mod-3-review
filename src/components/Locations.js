@@ -1,46 +1,80 @@
-import { Component  } from "react";
+import { Component, useState, useEffect  } from "react";
 
-class Locations extends Component{
-    constructor(){
-        super();
-        this.state = {
-            locations: [],
-            displayLocations: false
-        }
-    }
+const Locations=()=>{
+    const [ locations, setLocations ] = useState([]);
+    const [ show, setShow ] = useState(false);
 
-    componentDidMount(){
+    useEffect(()=>{
         fetch("https://ghibliapi.herokuapp.com/locations")
             .then(res=>res.json())
             .then(data=>{
-                this.setState({
-                    locations: data
-                })
+                setLocations(data);
             })
-    }
-    handleToggleLocations=()=>{
-        this.setState({
-            displayLocations: !this.state.displayLocations
-        })
+    }, []);
+
+    const handleToggleLocations=()=>{
+        setShow(!show);
     }
 
-    render(){
-        let locationsElArr = this.state.locations.map((location)=>{
-            return <li>{location.name}</li>
-        })
+    let locationsElArr = locations.map((location)=>{
+        return <li>{location.name}</li>
+    })
 
-        return(
-            <div className="locations">
-                <h1>List of Locations</h1>
-                <button onClick={this.handleToggleLocations}>{this.state.displayLocations ? "Hide": "Show"} Locations</button>
-                { this.state.displayLocations &&
-                    <ul>
-                        { locationsElArr }
-                    </ul>
-                }
-            </div>
-        )
-    }
+    return(
+        <div className="locations">
+            <h1>List of Locations</h1>
+            <button onClick={handleToggleLocations}>{show ? "Hide": "Show"} Locations</button>
+            { show &&
+                <ul>
+                    { locationsElArr }
+                </ul>
+            }
+        </div>
+    )
 }
+
+// class Locations extends Component{
+//     constructor(){
+//         super();
+//         this.state = {
+//             locations: [],
+//             show: false
+//         }
+//     }
+
+//     componentDidMount(){
+//         fetch("https://ghibliapi.herokuapp.com/locations")
+//             .then(res=>res.json())
+//             .then(data=>{
+//                 this.setState({
+//                     locations: data
+//                 })
+//             })
+//     }
+
+//     handleToggleLocations=()=>{
+//         this.setState({
+//             show: !this.state.show
+//         })
+//     }
+
+//     render(){
+//         let locationsElArr = this.state.locations.map((location)=>{
+//             return <li>{location.name}</li>
+//         })
+
+//         return(
+//             <div className="locations">
+//                 <h1>List of Locations</h1>
+//                 <button onClick={this.handleToggleLocations}>{this.state.show ? "Hide": "Show"} Locations</button>
+//                 { this.state.show &&
+//                     <ul>
+//                         { locationsElArr }
+//                     </ul>
+//                 }
+//             </div>
+//         )
+//     }
+// }
 
 export default Locations;
